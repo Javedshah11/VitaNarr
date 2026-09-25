@@ -1,0 +1,62 @@
+# Node and package managers
+node_modules/
+.pnpm-store/
+npm-debug.log*
+pnpm-debug.log*
+
+# Next.js
+.next/
+out/
+.vercel/
+
+# TypeScript and builds
+dist/
+build/
+*.tsbuildinfo
+next-env.d.ts
+.turbo/
+coverage/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+*.egg-info/
+
+# Environment and secrets
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env.*.local
+!.env.example
+
+# VitaNarr runtime data
+storage/*
+!storage/.gitkeep
+uploads/
+temp/
+tmp/
+
+# Logs and local models
+logs/
+*.log
+models/
+*.gguf
+*.safetensors
+
+# Editors and operating systems
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+Thumbs.db
+Desktop.ini
+.DS_Store
