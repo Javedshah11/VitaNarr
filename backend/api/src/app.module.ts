@@ -7,6 +7,9 @@ import { LoggerModule } from 'nestjs-pino';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter.js';
 import { validateEnvironment } from './config/environment.js';
 import { HealthModule } from './health/health.module.js';
+import { DatabaseModule } from './infrastructure/database/database.module.js';
+import { AuthModule } from './modules/auth/auth.module.js';
+import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
   imports: [
@@ -15,7 +18,14 @@ import { HealthModule } from './health/health.module.js';
       isGlobal: true,
       validate: validateEnvironment,
     }),
-    ThrottlerModule.forRoot([{ limit: 100, ttl: 60_000 }]),
+
+    ThrottlerModule.forRoot([
+      {
+        limit: 100,
+        ttl: 60_000,
+      },
+    ]),
+
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.LOG_LEVEL ?? 'info',
@@ -24,15 +34,29 @@ import { HealthModule } from './health/health.module.js';
             ? undefined
             : {
                 target: 'pino-pretty',
-                options: { colorize: true, singleLine: true },
+                options: {
+                  colorize: true,
+                  singleLine: true,
+                },
               },
       },
     }),
+
+    DatabaseModule,
     HealthModule,
+    UsersModule,
+    AuthModule,
   ],
+
   providers: [
-    { provide: APP_GUARD, useClass: ThrottlerGuard },
-    { provide: APP_FILTER, useClass: GlobalExceptionFilter },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
   ],
 })
 export class AppModule {}
