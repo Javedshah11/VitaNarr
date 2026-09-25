@@ -3,6 +3,10 @@ node_modules/
 .pnpm-store/
 npm-debug.log*
 pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.pid
+*.pid.lock
 
 # Next.js
 .next/
@@ -16,6 +20,12 @@ build/
 next-env.d.ts
 .turbo/
 coverage/
+.nyc_output/
+test-results/
+playwright-report/
+blob-report/
+junit.xml
+.eslintcache
 
 # Python
 __pycache__/
@@ -28,6 +38,8 @@ venv/
 htmlcov/
 .coverage
 *.egg-info/
+.tox/
+.nox/
 
 # Environment and secrets
 .env
@@ -44,6 +56,9 @@ storage/*
 uploads/
 temp/
 tmp/
+*.tmp
+*.temp
+*.cache
 
 # Logs and local models
 logs/
@@ -52,11 +67,28 @@ models/
 *.gguf
 *.safetensors
 
+# Local databases and data snapshots
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+*.dump
+
+# Local Docker overrides
+docker-compose.override.yml
+compose.override.yml
+
 # Editors and operating systems
 .idea/
-.vscode/*
-!.vscode/settings.json
-!.vscode/extensions.json
+.vscode/
+.cursor/
+.claude/
+.codex/
+AGENTS.md
+CLAUDE.md
+*.swp
+*.swo
+*~
 Thumbs.db
 Desktop.ini
 .DS_Store
