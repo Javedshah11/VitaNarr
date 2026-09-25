@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="600" viewBox="0 0 1800 600" role="img" aria-labelledby="title desc">
+  <title id="title">VitaNarr — Live it. Tell it. Preserve it.</title>
+  <desc id="desc">Premium dark GitHub banner for VitaNarr with an open book, life-memory timeline, glowing nodes, and an AI profile.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#050913"/>
+      <stop offset="42%" stop-color="#07142b"/>
+      <stop offset="100%" stop-color="#040713"/>
+    </linearGradient>
+
+    <radialGradient id="halo" cx="50%" cy="48%" r="55%">
+      <stop offset="0%" stop-color="#1f6fff" stop-opacity=".24"/>
+      <stop offset="45%" stop-color="#6d44ff" stop-opacity=".10"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="42%" stop-color="#eaf4ff"/>
+      <stop offset="68%" stop-color="#4cc6ff"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2fd4ff"/>
+      <stop offset="50%" stop-color="#4f8cff"/>
+      <stop offset="100%" stop-color="#9b5cff"/>
+    </linearGradient>
+
+    <linearGradient id="bookFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#17264a"/>
+      <stop offset="100%" stop-color="#071125"/>
+    </linearGradient>
+
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="cardShadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#000814" flood-opacity=".7"/>
+    </filter>
+
+    <clipPath id="card1"><rect x="85" y="186" width="126" height="166" rx="18"/></clipPath>
+    <clipPath id="card2"><rect x="245" y="232" width="118" height="148" rx="18"/></clipPath>
+    <clipPath id="card3"><rect x="390" y="282" width="126" height="142" rx="18"/></clipPath>
+    <clipPath id="card4"><rect x="1546" y="205" width="120" height="150" rx="18"/></clipPath>
+    <clipPath id="card5"><rect x="1412" y="292" width="116" height="142" rx="18"/></clipPath>
+  </defs>
+
+  <rect width="1800" height="600" fill="url(#bg)"/>
+  <rect width="1800" height="600" fill="url(#halo)"/>
+
+  <!-- subtle grid/stars -->
+  <g opacity=".25" fill="#7db7ff">
+    <circle cx="80" cy="90" r="1.4"/><circle cx="170" cy="75" r="1"/>
+    <circle cx="320" cy="130" r="1.2"/><circle cx="480" cy="80" r="1"/>
+    <circle cx="1310" cy="72" r="1.2"/><circle cx="1450" cy="110" r="1"/>
+    <circle cx="1620" cy="70" r="1.4"/><circle cx="1735" cy="145" r="1"/>
+    <circle cx="1200" cy="180" r="1"/><circle cx="570" cy="175" r="1"/>
+  </g>
+
+  <!-- flowing timeline -->
+  <path d="M 0 388 C 170 320, 280 428, 470 386 S 720 350, 855 442"
+        fill="none" stroke="#2f9cff" stroke-width="3" opacity=".75" filter="url(#softGlow)"/>
+  <path d="M 945 442 C 1120 350, 1290 420, 1455 360 S 1690 335, 1800 365"
+        fill="none" stroke="#8b5cf6" stroke-width="3" opacity=".75" filter="url(#softGlow)"/>
+
+  <path d="M 15 410 C 200 360, 310 452, 515 414 S 720 395, 850 468"
+        fill="none" stroke="#78d9ff" stroke-width="1.2" opacity=".35"/>
+  <path d="M 950 468 C 1130 390, 1290 450, 1485 395 S 1690 370, 1785 395"
+        fill="none" stroke="#b998ff" stroke-width="1.2" opacity=".35"/>
+
+  <!-- left memory cards -->
+  <g filter="url(#cardShadow)">
+    <rect x="85" y="186" width="126" height="166" rx="18" fill="#0b1730" stroke="#58bfff" stroke-width="2"/>
+    <g clip-path="url(#card1)">
+      <rect x="85" y="186" width="126" height="166" fill="#0a1730"/>
+      <circle cx="148" cy="247" r="33" fill="#ffb35f" opacity=".9"/>
+      <rect x="85" y="280" width="126" height="72" fill="#11274b"/>
+      <path d="M86 330 C118 292, 162 295, 211 325 L211 352 L86 352Z" fill="#0a0f1f"/>
+      <circle cx="145" cy="281" r="8" fill="#0a0f1f"/>
+      <path d="M144 290 l-10 25 h20z" fill="#0a0f1f"/>
+    </g>
+
+    <rect x="245" y="232" width="118" height="148" rx="18" fill="#0b1730" stroke="#58bfff" stroke-width="2"/>
+    <g clip-path="url(#card2)">
+      <rect x="245" y="232" width="118" height="148" fill="#101833"/>
+      <rect x="245" y="317" width="118" height="63" fill="#18213e"/>
+      <circle cx="304" cy="294" r="12" fill="#111827"/>
+      <path d="M273 278 l31-18 31 18-31 18z" fill="#050814"/>
+      <path d="M294 309 h20 l12 42 h-44z" fill="#080d1a"/>
+    </g>
+
+    <rect x="390" y="282" width="126" height="142" rx="18" fill="#0b1730" stroke="#58bfff" stroke-width="2"/>
+    <g clip-path="url(#card3)">
+      <rect x="390" y="282" width="126" height="142" fill="#0d2143"/>
+      <path d="M390 377 l36-42 26 27 19-18 45 42 v38 H390z" fill="#1f4471"/>
+      <path d="M390 397 l48-40 26 25 52-52 v94 H390z" fill="#0a1428"/>
+      <circle cx="466" cy="347" r="9" fill="#111827"/>
+      <path d="M466 356 l-10 32 h20z" fill="#0b1220"/>
+    </g>
+  </g>
+
+  <!-- left nodes -->
+  <g fill="#b8ecff" stroke="#4fb6ff" stroke-width="2" filter="url(#softGlow)">
+    <circle cx="65" cy="371" r="7"/><circle cx="225" cy="386" r="7"/>
+    <circle cx="377" cy="405" r="7"/><circle cx="530" cy="405" r="7"/>
+  </g>
+
+  <!-- right memory cards -->
+  <g filter="url(#cardShadow)">
+    <rect x="1546" y="205" width="120" height="150" rx="18" fill="#0b1730" stroke="#8d74ff" stroke-width="2"/>
+    <g clip-path="url(#card4)">
+      <rect x="1546" y="205" width="120" height="150" fill="#111a31"/>
+      <circle cx="1592" cy="266" r="24" fill="#30384e"/>
+      <circle cx="1624" cy="270" r="26" fill="#3b4256"/>
+      <path d="M1560 355 C1568 310, 1600 292, 1665 320 v35z" fill="#151b29"/>
+      <path d="M1605 296 C1618 313, 1636 320, 1652 324" fill="none" stroke="#777f91" stroke-width="7" stroke-linecap="round"/>
+    </g>
+
+    <rect x="1412" y="292" width="116" height="142" rx="18" fill="#0b1730" stroke="#8d74ff" stroke-width="2"/>
+    <g clip-path="url(#card5)">
+      <rect x="1412" y="292" width="116" height="142" fill="#181c2f"/>
+      <path d="M1428 379 C1450 346, 1470 340, 1498 360" fill="none" stroke="#b6a9b8" stroke-width="14" stroke-linecap="round"/>
+      <path d="M1454 366 C1472 338, 1502 344, 1514 367" fill="none" stroke="#8f8294" stroke-width="12" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- AI profile / constellation -->
+  <g opacity=".95">
+    <path d="M1308 125
+             C1376 124, 1424 169, 1434 226
+             C1442 271, 1426 306, 1400 330
+             C1388 341, 1392 365, 1411 388
+             C1388 409, 1354 418, 1320 410
+             C1290 403, 1270 383, 1264 359
+             C1255 323, 1262 295, 1247 274
+             C1228 248, 1239 204, 1262 175
+             C1275 158, 1289 143, 1308 125Z"
+          fill="#0b1733" fill-opacity=".52" stroke="url(#accent)" stroke-width="2.2" filter="url(#softGlow)"/>
+
+    <g stroke="#755cff" stroke-width="1.2" opacity=".8">
+      <path d="M1274 175 L1310 154 L1350 168 L1386 205 L1398 250 L1375 287 L1402 332"/>
+      <path d="M1310 154 L1324 205 L1288 236 L1330 267 L1375 287"/>
+      <path d="M1350 168 L1324 205 L1365 226 L1398 250"/>
+      <path d="M1288 236 L1268 284 L1330 267 L1320 320 L1363 347"/>
+      <path d="M1330 267 L1375 287 L1363 347 L1402 332"/>
+    </g>
+
+    <g fill="#77b7ff" filter="url(#softGlow)">
+      <circle cx="1274" cy="175" r="4"/><circle cx="1310" cy="154" r="5"/>
+      <circle cx="1350" cy="168" r="4"/><circle cx="1386" cy="205" r="5"/>
+      <circle cx="1324" cy="205" r="4"/><circle cx="1365" cy="226" r="4"/>
+      <circle cx="1398" cy="250" r="5"/><circle cx="1288" cy="236" r="4"/>
+      <circle cx="1268" cy="284" r="4"/><circle cx="1330" cy="267" r="5"/>
+      <circle cx="1375" cy="287" r="4"/><circle cx="1320" cy="320" r="4"/>
+      <circle cx="1363" cy="347" r="5"/><circle cx="1402" cy="332" r="4"/>
+    </g>
+  </g>
+
+  <!-- right nodes -->
+  <g fill="#d4c7ff" stroke="#8b6cff" stroke-width="2" filter="url(#softGlow)">
+    <circle cx="1515" cy="398" r="7"/><circle cx="1664" cy="373" r="7"/><circle cx="1748" cy="375" r="7"/>
+  </g>
+
+  <!-- brand title -->
+  <g text-anchor="middle">
+    <text x="900" y="220"
+          font-family="Inter, Segoe UI, Arial, sans-serif"
+          font-size="108"
+          font-weight="800"
+          letter-spacing="-3"
+          fill="url(#brand)"
+          filter="url(#softGlow)">VitaNarr</text>
+
+    <text x="900" y="276"
+          font-family="Inter, Segoe UI, Arial, sans-serif"
+          font-size="31"
+          font-weight="500"
+          letter-spacing="2.4"
+          fill="#eaf3ff">Live it. <tspan fill="#38bdf8">Tell it.</tspan> <tspan fill="#a78bfa">Preserve it.</tspan></text>
+
+    <line x1="795" y1="315" x2="862" y2="315" stroke="#36c4ff" stroke-width="2" opacity=".75"/>
+    <line x1="938" y1="315" x2="1005" y2="315" stroke="#8b5cf6" stroke-width="2" opacity=".75"/>
+    <path d="M900 301 L906 315 L920 321 L906 327 L900 341 L894 327 L880 321 L894 315Z"
+          fill="url(#accent)" filter="url(#softGlow)"/>
+  </g>
+
+  <!-- open book -->
+  <g filter="url(#glow)">
+    <path d="M540 496
+             C640 463, 752 455, 894 490
+             L894 540
+             C770 512, 650 514, 535 543
+             C520 547, 510 532, 520 519
+             C526 511, 533 503, 540 496Z"
+          fill="url(#bookFill)" stroke="#4f8cff" stroke-width="2"/>
+
+    <path d="M1260 496
+             C1160 463, 1048 455, 906 490
+             L906 540
+             C1030 512, 1150 514, 1265 543
+             C1280 547, 1290 532, 1280 519
+             C1274 511, 1267 503, 1260 496Z"
+          fill="url(#bookFill)" stroke="#8b5cf6" stroke-width="2"/>
+
+    <path d="M894 490 C897 467, 901 467, 906 490 L906 540 C901 529, 897 529, 894 540Z"
+          fill="#e9f3ff" opacity=".95"/>
+  </g>
+
+  <!-- book light -->
+  <path d="M900 474 C900 430, 900 390, 900 344"
+        stroke="url(#accent)" stroke-width="4" opacity=".45" filter="url(#glow)"/>
+  <ellipse cx="900" cy="538" rx="180" ry="18" fill="#2d64ff" opacity=".18" filter="url(#glow)"/>
+
+  <!-- footer microcopy -->
+  <text x="900" y="578" text-anchor="middle"
+        font-family="Inter, Segoe UI, Arial, sans-serif"
+        font-size="15" letter-spacing="3.2"
+        fill="#7d8eaf" opacity=".85">
+    AI-POWERED LIFE STORY • LOCAL-FIRST • PRIVACY BY DESIGN
+  </text>
+</svg>
