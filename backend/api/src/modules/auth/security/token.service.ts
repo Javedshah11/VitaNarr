@@ -27,10 +27,9 @@ export class TokenService {
     userId: string;
     email: string;
   }): Promise<string> {
-    const expiresIn =
-      this.configService.getOrThrow<number>(
-        'JWT_ACCESS_TTL_SECONDS',
-      );
+    const expiresIn = this.configService.getOrThrow<number>(
+      'JWT_ACCESS_TTL_SECONDS',
+    );
 
     return this.jwtService.signAsync(
       {
@@ -47,14 +46,11 @@ export class TokenService {
   createRefreshToken(): RefreshTokenResult {
     const token = randomBytes(64).toString('base64url');
 
-    const ttlDays =
-      this.configService.getOrThrow<number>(
-        'REFRESH_TOKEN_TTL_DAYS',
-      );
-
-    const expiresAt = new Date(
-      Date.now() + ttlDays * 24 * 60 * 60 * 1000,
+    const ttlDays = this.configService.getOrThrow<number>(
+      'REFRESH_TOKEN_TTL_DAYS',
     );
+
+    const expiresAt = new Date(Date.now() + ttlDays * 24 * 60 * 60 * 1000);
 
     return {
       token,
@@ -64,16 +60,10 @@ export class TokenService {
   }
 
   hashRefreshToken(token: string): string {
-    return createHash('sha256')
-      .update(token, 'utf8')
-      .digest('hex');
+    return createHash('sha256').update(token, 'utf8').digest('hex');
   }
 
-  async verifyAccessToken(
-    token: string,
-  ): Promise<AccessTokenPayload> {
-    return this.jwtService.verifyAsync<AccessTokenPayload>(
-      token,
-    );
+  async verifyAccessToken(token: string): Promise<AccessTokenPayload> {
+    return this.jwtService.verifyAsync<AccessTokenPayload>(token);
   }
 }
