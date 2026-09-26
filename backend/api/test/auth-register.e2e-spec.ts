@@ -8,10 +8,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { AppModule } from '../src/app.module.js';
 import { DATABASE_CLIENT } from '../src/infrastructure/database/database.constants.js';
 import type { DatabaseClient } from '../src/infrastructure/database/database.js';
-import {
-  profiles,
-  users,
-} from '../src/infrastructure/database/schema.js';
+import { profiles, users } from '../src/infrastructure/database/schema.js';
 
 describe('Authentication registration', () => {
   let app: INestApplication;
@@ -88,9 +85,7 @@ describe('Authentication registration', () => {
       .limit(1);
 
     expect(storedUser).toBeDefined();
-    expect(storedUser?.passwordHash).not.toBe(
-      'StrongPassword123!',
-    );
+    expect(storedUser?.passwordHash).not.toBe('StrongPassword123!');
   });
 
   it('rejects a duplicate email', async () => {

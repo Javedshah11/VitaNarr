@@ -10,22 +10,13 @@ import { TokenService } from './token.service.js';
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret:
-          configService.getOrThrow<string>(
-            'JWT_ACCESS_SECRET',
-          ),
+        secret: configService.getOrThrow<string>('JWT_ACCESS_SECRET'),
       }),
     }),
   ],
 
-  providers: [
-    PasswordService,
-    TokenService,
-  ],
+  providers: [PasswordService, TokenService],
 
-  exports: [
-    PasswordService,
-    TokenService,
-  ],
+  exports: [PasswordService, TokenService],
 })
 export class AuthSecurityModule {}

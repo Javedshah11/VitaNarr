@@ -10,9 +10,7 @@ export interface DatabaseClient {
   pool: Pool;
 }
 
-export function createDatabaseClient(
-  connectionString: string,
-): DatabaseClient {
+export function createDatabaseClient(connectionString: string): DatabaseClient {
   const pool = new Pool({
     connectionString,
     max: 10,

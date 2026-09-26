@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 
 import { DATABASE_CLIENT } from '../../infrastructure/database/database.constants.js';
@@ -57,9 +53,7 @@ export class UsersService {
     const existingUser = await this.findByEmail(email);
 
     if (existingUser) {
-      throw new ConflictException(
-        'An account with this email already exists.',
-      );
+      throw new ConflictException('An account with this email already exists.');
     }
 
     const passwordHash = await this.passwordService.hash(input.password);
@@ -106,11 +100,7 @@ export class UsersService {
   }
 
   private isUniqueViolation(error: unknown): boolean {
-    if (
-      typeof error !== 'object' ||
-      error === null ||
-      !('code' in error)
-    ) {
+    if (typeof error !== 'object' || error === null || !('code' in error)) {
       return false;
     }
 

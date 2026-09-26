@@ -19,30 +19,16 @@ const environmentSchema = z.object({
   DATABASE_URL: z
     .string()
     .min(1)
-    .default(
-      'postgresql://vitanarr:replace_me@localhost:5432/vitanarr',
-    ),
+    .default('postgresql://vitanarr:replace_me@localhost:5432/vitanarr'),
 
   REDIS_URL: z.string().min(1).default('redis://localhost:6379'),
 
-  INTELLIGENCE_URL: z
-    .url()
-    .default('http://127.0.0.1:8001'),
+  INTELLIGENCE_URL: z.url().default('http://127.0.0.1:8001'),
 
-  CORS_ORIGINS: z
-    .string()
-    .min(1)
-    .default('http://localhost:3000'),
+  CORS_ORIGINS: z.string().min(1).default('http://localhost:3000'),
 
   LOG_LEVEL: z
-    .enum([
-      'fatal',
-      'error',
-      'warn',
-      'info',
-      'debug',
-      'trace',
-    ])
+    .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
     .default('debug'),
 
   ENABLE_API_DOCS: booleanString,
@@ -73,9 +59,7 @@ export function validateEnvironment(
 
   if (!result.success) {
     throw new Error(
-      `Invalid environment configuration: ${z.prettifyError(
-        result.error,
-      )}`,
+      `Invalid environment configuration: ${z.prettifyError(result.error)}`,
     );
   }
 
