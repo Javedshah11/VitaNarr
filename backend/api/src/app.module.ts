@@ -9,6 +9,7 @@ import { validateEnvironment } from './config/environment.js';
 import { HealthModule } from './health/health.module.js';
 import { DatabaseModule } from './infrastructure/database/database.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
+import { StoriesModule } from './modules/stories/stories.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
@@ -29,6 +30,14 @@ import { UsersModule } from './modules/users/users.module.js';
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.LOG_LEVEL ?? 'info',
+        redact: {
+          censor: '[REDACTED]',
+          paths: [
+            'req.headers.authorization',
+            'req.headers.cookie',
+            'res.headers["set-cookie"]',
+          ],
+        },
         transport:
           process.env.NODE_ENV === 'production'
             ? undefined
@@ -46,6 +55,7 @@ import { UsersModule } from './modules/users/users.module.js';
     HealthModule,
     UsersModule,
     AuthModule,
+    StoriesModule,
   ],
 
   providers: [

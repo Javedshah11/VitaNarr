@@ -8,6 +8,13 @@
       "when": 1790354535073,
       "tag": "0000_boring_professor_monster",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792353211500,
+      "tag": "0001_round_ender_wiggin",
+      "breakpoints": true
     }
   ]
 }

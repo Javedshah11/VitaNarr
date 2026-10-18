@@ -6,6 +6,7 @@ import {
   index,
   pgEnum,
   pgTable,
+  text,
   timestamp,
   uniqueIndex,
   uuid,
@@ -13,6 +14,12 @@ import {
 } from 'drizzle-orm/pg-core';
 
 export const userStatusEnum = pgEnum('user_status', ['active', 'disabled']);
+export const storyStatusEnum = pgEnum('story_status', [
+  'draft',
+  'in_progress',
+  'completed',
+  'archived',
+]);
 
 export const users = pgTable(
   'users',
@@ -146,6 +153,51 @@ export const authSessions = pgTable(
   ],
 );
 
+export const stories = pgTable(
+  'stories',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+
+    ownerId: uuid('owner_id')
+      .notNull()
+      .references(() => users.id, {
+        onDelete: 'cascade',
+      }),
+
+    title: varchar('title', { length: 160 }).notNull(),
+
+    subtitle: varchar('subtitle', { length: 255 }),
+
+    description: text('description'),
+
+    coverKey: varchar('cover_key', { length: 64 }),
+
+    writingLanguage: varchar('writing_language', { length: 64 })
+      .default('English')
+      .notNull(),
+
+    status: storyStatusEnum('status').default('draft').notNull(),
+
+    createdAt: timestamp('created_at', {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull(),
+
+    updatedAt: timestamp('updated_at', {
+      withTimezone: true,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index('stories_owner_id_idx').on(table.ownerId),
+    index('stories_owner_status_idx').on(table.ownerId, table.status),
+    index('stories_owner_updated_at_idx').on(table.ownerId, table.updatedAt),
+    check('stories_title_not_blank', sql`length(trim(${table.title})) > 0`),
+  ],
+);
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 
@@ -154,3 +206,6 @@ export type NewProfile = typeof profiles.$inferInsert;
 
 export type AuthSession = typeof authSessions.$inferSelect;
 export type NewAuthSession = typeof authSessions.$inferInsert;
+
+export type Story = typeof stories.$inferSelect;
+export type NewStory = typeof stories.$inferInsert;

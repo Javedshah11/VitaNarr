@@ -1,17 +1,20 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
   Req,
   Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   ApiConflictResponse,
   ApiCreatedResponse,
+  ApiBearerAuth,
   ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
@@ -22,6 +25,8 @@ import {
 import type { CookieOptions, Request, Response } from 'express';
 
 import type { SafeUser } from '../users/user.types.js';
+import { AccessTokenGuard } from './access-token.guard.js';
+import { AuthenticatedUser } from './authenticated-user.decorator.js';
 import { REFRESH_COOKIE_NAME, REFRESH_COOKIE_PATH } from './auth.constants.js';
 import { AuthService, type AuthResult } from './auth.service.js';
 import { LoginDto } from './dto/login.dto.js';
@@ -56,6 +61,22 @@ export class AuthController {
   })
   async register(@Body() input: RegisterDto): Promise<SafeUser> {
     return this.authService.register(input);
+  }
+
+  @Get('me')
+  @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get the current authenticated user',
+  })
+  @ApiOkResponse({
+    description: 'The access token is valid.',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'The access token is missing, invalid or expired.',
+  })
+  me(@AuthenticatedUser() user: SafeUser): SafeUser {
+    return user;
   }
 
   @Post('login')
