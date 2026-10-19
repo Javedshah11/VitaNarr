@@ -1,9 +1,4 @@
-export const STORY_STATUSES = [
-  'draft',
-  'in_progress',
-  'completed',
-  'archived',
-] as const;
+export const STORY_STATUSES = ['draft', 'in_progress', 'completed', 'archived'] as const;
 
 export type StoryStatus = (typeof STORY_STATUSES)[number];
 export type StoryCoverKey = 'heritage' | 'evergreen' | 'sunrise' | 'linen';
@@ -66,7 +61,7 @@ export const STORY_COVERS: Array<{
 
 export function getCoverClass(coverKey: StoryCoverKey | null): string {
   return (
-    STORY_COVERS.find((cover) => cover.key === (coverKey ?? 'heritage'))
-      ?.className ?? STORY_COVERS[0]!.className
+    STORY_COVERS.find((cover) => cover.key === (coverKey ?? 'heritage'))?.className ??
+    STORY_COVERS[0]!.className
   );
 }

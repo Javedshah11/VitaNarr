@@ -19,17 +19,33 @@ export function useStories() {
       setStories(result);
       setError(null);
     } catch (loadError) {
-      setError(
-        loadError instanceof Error ? loadError.message : 'Could not load stories.',
-      );
+      setError(loadError instanceof Error ? loadError.message : 'Could not load stories.');
     } finally {
       setLoading(false);
     }
   }, [authenticatedRequest]);
 
   useEffect(() => {
-    if (status === 'authenticated') void loadStories();
-  }, [loadStories, status]);
+    if (status !== 'authenticated') return;
+    let active = true;
+    void listStories(authenticatedRequest)
+      .then((result) => {
+        if (!active) return;
+        setStories(result);
+        setError(null);
+      })
+      .catch((loadError: unknown) => {
+        if (active) {
+          setError(loadError instanceof Error ? loadError.message : 'Could not load stories.');
+        }
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [authenticatedRequest, status]);
 
   const refresh = useCallback(async () => {
     setLoading(true);

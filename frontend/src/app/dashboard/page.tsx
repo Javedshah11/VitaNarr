@@ -1,14 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  ArrowRight,
-  BookOpen,
-  FileText,
-  Image as ImageIcon,
-  Plus,
-  Sparkles,
-} from 'lucide-react';
+import { ArrowRight, BookOpen, FileText, Image as ImageIcon, Plus, Sparkles } from 'lucide-react';
 
 import { WorkspaceShell } from '@/components/workspace-shell';
 import { useAuth } from '@/features/auth/auth-context';
@@ -32,14 +25,11 @@ export default function DashboardPage() {
               Welcome, {firstName}.
             </h1>
             <p className="mt-4 max-w-xl leading-7 text-muted">
-              Gather your autobiographies, return to a draft, or begin a new
-              story whenever inspiration arrives.
+              Gather your autobiographies, return to a draft, or begin a new story whenever
+              inspiration arrives.
             </p>
           </div>
-          <Link
-            href="/stories/new"
-            className="button-primary button-large self-start md:self-auto"
-          >
+          <Link href="/stories/new" className="button-primary button-large self-start md:self-auto">
             <Plus className="size-4" /> Create a story
           </Link>
         </div>
@@ -50,10 +40,7 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <section
-          className="mt-9 grid gap-4 sm:grid-cols-3"
-          aria-label="Story statistics"
-        >
+        <section className="mt-9 grid gap-4 sm:grid-cols-3" aria-label="Story statistics">
           <StatCard
             label="Stories"
             value={loading ? '—' : String(stories.length)}
@@ -118,9 +105,7 @@ export default function DashboardPage() {
                   >
                     <div className="min-w-0">
                       <p className="truncate text-sm font-bold">{story.title}</p>
-                      <p className="mt-1 text-xs text-muted">
-                        {STORY_STATUS_LABELS[story.status]}
-                      </p>
+                      <p className="mt-1 text-xs text-muted">{STORY_STATUS_LABELS[story.status]}</p>
                     </div>
                     <ArrowRight className="size-4 shrink-0 text-muted" />
                   </Link>
@@ -158,12 +143,8 @@ function StatCard({
     <article className="rounded-2xl border border-stroke bg-card p-6 shadow-[0_14px_34px_rgba(23,61,56,0.04)]">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-muted">
-            {label}
-          </p>
-          <p className="mt-2 font-serif text-5xl font-semibold tracking-[-0.04em]">
-            {value}
-          </p>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-muted">{label}</p>
+          <p className="mt-2 font-serif text-5xl font-semibold tracking-[-0.04em]">{value}</p>
         </div>
         <span className="grid size-10 place-items-center rounded-xl bg-brand/8 text-brand">
           <Icon className="size-4" />

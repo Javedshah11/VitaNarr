@@ -1,25 +1,16 @@
 import type { Story, StoryInput } from './story-types';
 
-export type AuthenticatedRequest = <T>(
-  path: string,
-  init?: RequestInit,
-) => Promise<T>;
+export type AuthenticatedRequest = <T>(path: string, init?: RequestInit) => Promise<T>;
 
 export function listStories(request: AuthenticatedRequest): Promise<Story[]> {
   return request<Story[]>('/api/stories');
 }
 
-export function getStory(
-  request: AuthenticatedRequest,
-  storyId: string,
-): Promise<Story> {
+export function getStory(request: AuthenticatedRequest, storyId: string): Promise<Story> {
   return request<Story>(`/api/stories/${storyId}`);
 }
 
-export function createStory(
-  request: AuthenticatedRequest,
-  input: StoryInput,
-): Promise<Story> {
+export function createStory(request: AuthenticatedRequest, input: StoryInput): Promise<Story> {
   return request<Story>('/api/stories', {
     method: 'POST',
     body: JSON.stringify(input),
@@ -37,19 +28,13 @@ export function updateStory(
   });
 }
 
-export function archiveStory(
-  request: AuthenticatedRequest,
-  storyId: string,
-): Promise<Story> {
+export function archiveStory(request: AuthenticatedRequest, storyId: string): Promise<Story> {
   return request<Story>(`/api/stories/${storyId}/archive`, {
     method: 'POST',
   });
 }
 
-export function restoreStory(
-  request: AuthenticatedRequest,
-  storyId: string,
-): Promise<Story> {
+export function restoreStory(request: AuthenticatedRequest, storyId: string): Promise<Story> {
   return request<Story>(`/api/stories/${storyId}/restore`, {
     method: 'POST',
   });

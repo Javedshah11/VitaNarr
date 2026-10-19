@@ -10,12 +10,7 @@ import {
   type ReactNode,
 } from 'react';
 
-import {
-  ApiError,
-  apiRequest,
-  type AuthenticationResponse,
-  type SafeUser,
-} from '@/lib/api';
+import { ApiError, apiRequest, type AuthenticationResponse, type SafeUser } from '@/lib/api';
 
 type SessionStatus = 'loading' | 'authenticated' | 'anonymous';
 
@@ -127,10 +122,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         try {
-          const refreshed = await apiRequest<AuthenticationResponse>(
-            '/api/auth/refresh',
-            { method: 'POST' },
-          );
+          const refreshed = await apiRequest<AuthenticationResponse>('/api/auth/refresh', {
+            method: 'POST',
+          });
           applyAuthentication(refreshed);
           return await requestWithToken(refreshed.accessToken);
         } catch (refreshError) {

@@ -181,9 +181,7 @@ function WorkspaceLoading() {
         <span className="mx-auto grid size-14 place-items-center rounded-full bg-brand text-brand-foreground">
           <Feather className="size-5 animate-pulse" />
         </span>
-        <p className="mt-4 text-sm font-semibold text-muted">
-          Opening your story workspace…
-        </p>
+        <p className="mt-4 text-sm font-semibold text-muted">Opening your story workspace…</p>
       </div>
     </div>
   );
