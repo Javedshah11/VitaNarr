@@ -62,6 +62,69 @@ async def test_prioritizes_a_meaningful_follow_up() -> None:
 
 
 @pytest.mark.asyncio
+async def test_follows_explicit_answer_evidence_over_bootstrap_category() -> None:
+    provider = SequenceProvider(
+        [
+            GeneratedQuestion(
+                question="What did you learn from building that university project?",
+                category="education",
+            )
+        ]
+    )
+    request = context(
+        focus_area="education and formative software experiences",
+        conversation=[
+            {
+                "question": "What is one of your earliest memories?",
+                "answer": "At university, I built a campus accessibility project with classmates.",
+                "skipped": False,
+            }
+        ],
+    )
+
+    result = await InterviewService(provider).generate_question(request)  # type: ignore[arg-type]
+
+    assert result.strategy == "follow_up"
+    assert provider.targets == ["education"]
+
+
+@pytest.mark.asyncio
+async def test_rejects_an_unsupported_life_stage_from_a_skipped_question() -> None:
+    provider = SequenceProvider(
+        [
+            GeneratedQuestion(
+                question="Which childhood school experience shaped you most?",
+                category="education",
+            ),
+            GeneratedQuestion(
+                question="What did the university project teach you about design?",
+                category="education",
+            ),
+        ]
+    )
+    request = context(
+        focus_area="education",
+        conversation=[
+            {
+                "question": "Would you like to discuss your childhood?",
+                "answer": None,
+                "skipped": True,
+            },
+            {
+                "question": "Which university project mattered to you?",
+                "answer": "At university, I built an accessibility map and learned to listen before designing.",
+                "skipped": False,
+            },
+        ],
+    )
+
+    result = await InterviewService(provider).generate_question(request)  # type: ignore[arg-type]
+
+    assert result.question == "What did the university project teach you about design?"
+    assert provider.targets == ["education", "education"]
+
+
+@pytest.mark.asyncio
 async def test_avoids_skipped_topics_and_explores_an_unknown_stage_conditionally() -> None:
     provider = SequenceProvider(
         [

@@ -34,6 +34,19 @@ FALLBACK_QUESTIONS: dict[MemoryCategory, str] = {
     "other": "What other experience would you like to include in your life story?",
 }
 
+TOPIC_KEYWORDS: dict[MemoryCategory, tuple[str, ...]] = {
+    "childhood": ("childhood", "child", "young", "grew up", "early memory"),
+    "family": ("family", "mother", "father", "parent", "sibling", "brother", "sister"),
+    "education": ("education", "school", "university", "college", "teacher", "student", "campus", "degree"),
+    "friendship": ("friendship", "friend", "classmate"),
+    "career": ("career", "work", "job", "profession", "colleague", "business"),
+    "travel": ("travel", "trip", "journey", "visited", "vacation"),
+    "celebration": ("celebration", "birthday", "wedding", "festival", "anniversary"),
+    "challenge": ("challenge", "difficulty", "struggle", "obstacle", "hardship"),
+    "achievement": ("achievement", "award", "accomplishment", "proud", "success"),
+    "other": (),
+}
+
 
 class InterviewService:
     def __init__(self, provider: OllamaProvider) -> None:
@@ -54,8 +67,10 @@ class InterviewService:
                 candidate = await self.provider.generate_question(request, target)
             except InvalidModelOutputError:
                 continue
-            if candidate.category == target and not self._is_repetitive(
-                candidate.question, previous
+            if (
+                candidate.category == target
+                and not self._is_repetitive(candidate.question, previous)
+                and not self._has_unsupported_topic(candidate.question, target, request)
             ):
                 return SelectedQuestion(
                     **candidate.model_dump(),
@@ -85,12 +100,15 @@ class InterviewService:
         if not allowed:
             return "other", "fallback"
 
-        preferred = (request.focus_area or "").strip().casefold()
-        preferred_topic = next((topic for topic in allowed if topic == preferred), None)
+        last = request.conversation[-1]
+        evidenced_topic = self._topic_from_text(last.answer or "", allowed)
+        if last.answer and evidenced_topic is not None:
+            return evidenced_topic, "follow_up"
+
+        preferred_topic = self._topic_from_text(request.focus_area or "", allowed)
         if preferred_topic is not None:
             return preferred_topic, "explore_topic"
 
-        last = request.conversation[-1]
         last_topic = self._last_answered_topic(request)
         if last.answer and len(last.answer.split()) >= 6 and last_topic in allowed:
             item = coverage.get(last_topic)
@@ -105,6 +123,18 @@ class InterviewService:
             ),
         )
         return ranked[0], "explore_topic"
+
+    def _topic_from_text(
+        self, value: str, allowed: list[MemoryCategory]
+    ) -> MemoryCategory | None:
+        normalized = value.casefold()
+        scored = [
+            (sum(keyword in normalized for keyword in TOPIC_KEYWORDS[topic]), topic)
+            for topic in allowed
+            if topic != "other"
+        ]
+        matches = [item for item in scored if item[0] > 0]
+        return max(matches, default=(0, None), key=lambda item: item[0])[1]
 
     def _last_answered_topic(self, request: GenerateQuestionRequest) -> MemoryCategory:
         for item in reversed(request.topic_coverage):
@@ -121,6 +151,29 @@ class InterviewService:
             union = candidate_tokens | tokens
             if union and len(candidate_tokens & tokens) / len(union) >= 0.55:
                 return True
+        return False
+
+    def _has_unsupported_topic(
+        self,
+        question: str,
+        target: MemoryCategory,
+        request: GenerateQuestionRequest,
+    ) -> bool:
+        normalized_question = question.casefold()
+        evidence = " ".join(
+            [
+                turn.answer or ""
+                for turn in request.conversation
+                if turn.answer and not turn.skipped
+            ]
+            + [f"{memory.title} {memory.description}" for memory in request.memories]
+        ).casefold()
+        for topic, keywords in TOPIC_KEYWORDS.items():
+            if topic in (target, "other"):
+                continue
+            for keyword in keywords:
+                if keyword in normalized_question and keyword not in evidence:
+                    return True
         return False
 
     def _tokens(self, value: str) -> set[str]:

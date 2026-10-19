@@ -7,11 +7,9 @@ import {
   ArrowLeft,
   Check,
   CheckCircle2,
-  ChevronDown,
   Circle,
   Clock3,
   LoaderCircle,
-  MessageSquareText,
   Pause,
   Play,
   RotateCcw,
@@ -75,21 +73,33 @@ export default function InterviewWorkspacePage() {
 
   useEffect(() => {
     let active = true;
-    void reload()
+    void Promise.all([
+      getInterview(authenticatedRequest, sessionId),
+      getProgress(authenticatedRequest, sessionId),
+      listExtractions(authenticatedRequest, sessionId),
+    ])
+      .then(([conversation, coverage, extracted]) => {
+        if (!active) return;
+        setSession(conversation);
+        setProgress(coverage);
+        setSuggestions(extracted);
+      })
       .catch((reason: unknown) => active && setError(reason instanceof Error ? reason.message : 'Could not open this interview.'))
       .finally(() => active && setLoading(false));
     return () => {
       active = false;
     };
-  }, [reload]);
+  }, [authenticatedRequest, sessionId]);
 
   useEffect(() => {
     const savedId = window.localStorage.getItem(jobStorageKey(sessionId));
     if (!savedId) return;
     void getAiJob(authenticatedRequest, savedId)
       .then((savedJob) => {
-        if (!terminalJobStates.has(savedJob.status)) setJob(savedJob);
-        else window.localStorage.removeItem(jobStorageKey(sessionId));
+        setJob(savedJob);
+        if (savedJob.status === 'completed' || savedJob.status === 'cancelled') {
+          window.localStorage.removeItem(jobStorageKey(sessionId));
+        }
       })
       .catch(() => window.localStorage.removeItem(jobStorageKey(sessionId)));
   }, [authenticatedRequest, sessionId]);
@@ -101,12 +111,12 @@ export default function InterviewWorkspacePage() {
         .then(async (current) => {
           setJob(current);
           if (terminalJobStates.has(current.status)) {
-            window.localStorage.removeItem(jobStorageKey(sessionId));
+            if (current.status !== 'failed') window.localStorage.removeItem(jobStorageKey(sessionId));
             if (current.status === 'completed') await reload();
           }
         })
         .catch((reason: unknown) => setError(reason instanceof Error ? reason.message : 'Could not check AI progress.'));
-    }, 900);
+    }, 2_000);
     return () => window.clearInterval(timer);
   }, [authenticatedRequest, job, reload, sessionId]);
 

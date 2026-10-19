@@ -8,6 +8,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 
 import { AccessTokenGuard } from '../auth/access-token.guard.js';
 import { AuthenticatedUser } from '../auth/authenticated-user.decorator.js';
@@ -38,6 +39,7 @@ export class AiJobsController {
   }
 
   @Get('ai-jobs/:jobId')
+  @Throttle({ default: { limit: 300, ttl: 60_000 } })
   get(
     @AuthenticatedUser() user: SafeUser,
     @Param('jobId', new ParseUUIDPipe()) jobId: string,

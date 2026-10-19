@@ -179,6 +179,18 @@ describe('AI background job processing', () => {
     expect(suggestions.body[0]).toMatchObject({ status: 'pending' });
   }, 10_000);
 
+  it('permits authenticated UI polling for long-running local model jobs', async () => {
+    const responses = await Promise.all(
+      Array.from({ length: 110 }, () =>
+        request(app.getHttpServer())
+          .get(`/api/ai-jobs/${questionJobId}`)
+          .set('Authorization', `Bearer ${ownerToken}`),
+      ),
+    );
+
+    expect(responses.every((response) => response.statusCode === 200)).toBe(true);
+  });
+
   async function enqueue(path: string) {
     return request(app.getHttpServer())
       .post(`/api/interviews/${sessionId}/${path}`)
