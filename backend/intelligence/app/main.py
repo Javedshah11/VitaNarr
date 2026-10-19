@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from app.api.extractions import router as extractions_router
+from app.api.interviews import router as interviews_router
+
 
 class HealthResponse(BaseModel):
     status: str
@@ -15,6 +18,9 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+app.include_router(interviews_router)
+app.include_router(extractions_router)
 
 
 @app.get("/health", response_model=HealthResponse, tags=["System"])

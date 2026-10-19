@@ -17,6 +17,7 @@ import type { CreateStoryDto } from './dto/create-story.dto.js';
 import type { DeleteStoryDto } from './dto/delete-story.dto.js';
 import type { ListStoriesDto } from './dto/list-stories.dto.js';
 import type { UpdateStoryDto } from './dto/update-story.dto.js';
+import { MediaService } from '../media/media.service.js';
 import {
   canTransitionStoryStatus,
   type StoryStatus,
@@ -27,6 +28,7 @@ export class StoriesService {
   constructor(
     @Inject(DATABASE_CLIENT)
     private readonly databaseClient: DatabaseClient,
+    private readonly mediaService: MediaService,
   ) {}
 
   async create(ownerId: string, input: CreateStoryDto): Promise<Story> {
@@ -155,9 +157,12 @@ export class StoriesService {
       );
     }
 
+    const storageKeys = await this.mediaService.keysForStory(ownerId, storyId);
+
     await this.databaseClient.database
       .delete(stories)
       .where(and(eq(stories.id, storyId), eq(stories.ownerId, ownerId)));
+    await this.mediaService.removeStoredFiles(storageKeys);
   }
 
   private async findOwned(ownerId: string, storyId: string): Promise<Story> {

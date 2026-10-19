@@ -13,6 +13,9 @@ import { StoriesModule } from './modules/stories/stories.module.js';
 import { MemoriesModule } from './modules/memories/memories.module.js';
 import { TimelineModule } from './modules/timeline/timeline.module.js';
 import { MediaModule } from './modules/media/media.module.js';
+import { InterviewsModule } from './modules/interviews/interviews.module.js';
+import { ExtractionsModule } from './modules/extractions/extractions.module.js';
+import { AiJobsModule } from './modules/ai-jobs/ai-jobs.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
@@ -62,6 +65,9 @@ import { UsersModule } from './modules/users/users.module.js';
     MemoriesModule,
     TimelineModule,
     MediaModule,
+    InterviewsModule,
+    ExtractionsModule,
+    AiJobsModule,
   ],
 
   providers: [

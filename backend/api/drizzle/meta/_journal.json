@@ -22,6 +22,34 @@
       "when": 1792392258115,
       "tag": "0002_remarkable_jimmy_woo",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792409763147,
+      "tag": "0003_mighty_blackheart",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792426546572,
+      "tag": "0004_groovy_violations",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792427401416,
+      "tag": "0005_lame_spirit",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792428370389,
+      "tag": "0006_closed_reaper",
+      "breakpoints": true
     }
   ]
 }

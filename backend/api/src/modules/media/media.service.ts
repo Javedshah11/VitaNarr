@@ -107,6 +107,32 @@ export class MediaService {
       );
     await unlink(this.path(asset.storageKey)).catch(() => undefined);
   }
+  async keysForStory(ownerId: string, storyId: string): Promise<string[]> {
+    const rows = await this.client.database
+      .select({ key: mediaAssets.storageKey })
+      .from(mediaAssets)
+      .where(
+        and(eq(mediaAssets.ownerId, ownerId), eq(mediaAssets.storyId, storyId)),
+      );
+    return rows.map((row) => row.key);
+  }
+  async keysForMemory(ownerId: string, memoryId: string): Promise<string[]> {
+    const rows = await this.client.database
+      .select({ key: mediaAssets.storageKey })
+      .from(mediaAssets)
+      .where(
+        and(
+          eq(mediaAssets.ownerId, ownerId),
+          eq(mediaAssets.memoryId, memoryId),
+        ),
+      );
+    return rows.map((row) => row.key);
+  }
+  async removeStoredFiles(keys: string[]): Promise<void> {
+    await Promise.all(
+      keys.map((key) => unlink(this.path(key)).catch(() => undefined)),
+    );
+  }
   private async assertMemory(ownerId: string, id: string) {
     const [row] = await this.client.database
       .select({ id: memories.id })

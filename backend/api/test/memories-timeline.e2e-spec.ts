@@ -166,7 +166,10 @@ describe('Memory vault and timeline', () => {
     const uploaded = await request(app.getHttpServer())
       .post(`/api/memories/${memoryId}/media`)
       .set('Authorization', `Bearer ${ownerToken}`)
-      .attach('file', image, { filename: 'memory.png', contentType: 'image/png' })
+      .attach('file', image, {
+        filename: 'memory.png',
+        contentType: 'image/png',
+      })
       .expect(201);
     const assetId = uploaded.body.id as string;
     await request(app.getHttpServer())

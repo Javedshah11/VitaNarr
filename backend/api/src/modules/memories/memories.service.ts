@@ -31,6 +31,7 @@ import type {
   ListMemoriesDto,
   UpdateMemoryDto,
 } from './dto/memory.dto.js';
+import { MediaService } from '../media/media.service.js';
 
 export type MemoryRecord = Memory & { tags: string[] };
 
@@ -38,6 +39,7 @@ export type MemoryRecord = Memory & { tags: string[] };
 export class MemoriesService {
   constructor(
     @Inject(DATABASE_CLIENT) private readonly client: DatabaseClient,
+    private readonly media: MediaService,
   ) {}
 
   async create(
@@ -178,9 +180,11 @@ export class MemoriesService {
 
   async delete(ownerId: string, memoryId: string): Promise<void> {
     await this.findOwned(ownerId, memoryId);
+    const storageKeys = await this.media.keysForMemory(ownerId, memoryId);
     await this.client.database
       .delete(memories)
       .where(and(eq(memories.id, memoryId), eq(memories.ownerId, ownerId)));
+    await this.media.removeStoredFiles(storageKeys);
   }
 
   private async assertStory(ownerId: string, storyId: string) {

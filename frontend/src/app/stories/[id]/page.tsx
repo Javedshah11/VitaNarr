@@ -35,8 +35,9 @@ const futureSections = [
   },
   {
     title: 'Life interview',
-    detail: 'Guided questions arrive in Phase 6.',
+    detail: 'Explore your life through thoughtful, source-aware questions.',
     icon: MessageSquareText,
+    href: 'interviews',
   },
   {
     title: 'Timeline',

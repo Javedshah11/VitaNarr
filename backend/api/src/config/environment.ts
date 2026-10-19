@@ -23,7 +23,23 @@ const environmentSchema = z.object({
 
   REDIS_URL: z.string().min(1).default('redis://localhost:6379'),
 
+  AI_WORKER_CONCURRENCY: z.coerce.number().int().positive().max(8).default(1),
+
+  AI_JOB_MAX_ATTEMPTS: z.coerce.number().int().min(1).max(10).default(3),
+
   INTELLIGENCE_URL: z.url().default('http://127.0.0.1:8001'),
+
+  INTELLIGENCE_TIMEOUT_MS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .max(120_000)
+    .default(35_000),
+
+  INTELLIGENCE_INTERNAL_TOKEN: z
+    .string()
+    .min(32)
+    .default('development-only-internal-token-change-me'),
 
   CORS_ORIGINS: z.string().min(1).default('http://localhost:3000'),
 

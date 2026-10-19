@@ -42,6 +42,38 @@ export const datePrecisionEnum = pgEnum('date_precision', [
   'unknown',
 ]);
 export const mediaKindEnum = pgEnum('media_kind', ['image', 'document']);
+export const interviewStatusEnum = pgEnum('interview_status', [
+  'active',
+  'paused',
+  'completed',
+]);
+export const interviewQuestionSourceEnum = pgEnum('interview_question_source', [
+  'bootstrap',
+  'ai',
+]);
+export const interviewTopicStatusEnum = pgEnum('interview_topic_status', [
+  'unexplored',
+  'exploring',
+  'covered',
+  'skipped',
+]);
+export const extractionStatusEnum = pgEnum('extraction_status', [
+  'pending',
+  'approved',
+  'rejected',
+]);
+export const aiJobTypeEnum = pgEnum('ai_job_type', [
+  'question_generation',
+  'memory_extraction',
+]);
+export const aiJobStatusEnum = pgEnum('ai_job_status', [
+  'queued',
+  'processing',
+  'retrying',
+  'completed',
+  'failed',
+  'cancelled',
+]);
 
 export const users = pgTable(
   'users',
@@ -374,6 +406,285 @@ export const mediaAssets = pgTable(
   ],
 );
 
+export const interviewSessions = pgTable(
+  'interview_sessions',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    storyId: uuid('story_id')
+      .notNull()
+      .references(() => stories.id, { onDelete: 'cascade' }),
+    ownerId: uuid('owner_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    status: interviewStatusEnum('status').default('active').notNull(),
+    focusArea: varchar('focus_area', { length: 100 }),
+    language: varchar('language', { length: 64 }).default('English').notNull(),
+    startedAt: timestamp('started_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    pausedAt: timestamp('paused_at', { withTimezone: true }),
+    completedAt: timestamp('completed_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index('interview_sessions_owner_story_idx').on(
+      table.ownerId,
+      table.storyId,
+    ),
+    index('interview_sessions_story_status_idx').on(
+      table.storyId,
+      table.status,
+    ),
+    index('interview_sessions_updated_at_idx').on(table.updatedAt),
+  ],
+);
+
+export const interviewQuestions = pgTable(
+  'interview_questions',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    sessionId: uuid('session_id')
+      .notNull()
+      .references(() => interviewSessions.id, { onDelete: 'cascade' }),
+    ownerId: uuid('owner_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    sequence: integer('sequence').notNull(),
+    prompt: text('prompt').notNull(),
+    category: memoryCategoryEnum('category').default('other').notNull(),
+    source: interviewQuestionSourceEnum('source')
+      .default('bootstrap')
+      .notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex('interview_questions_session_sequence_unique').on(
+      table.sessionId,
+      table.sequence,
+    ),
+    index('interview_questions_owner_session_idx').on(
+      table.ownerId,
+      table.sessionId,
+    ),
+    check(
+      'interview_questions_prompt_not_blank',
+      sql`length(trim(${table.prompt})) > 0`,
+    ),
+    check('interview_questions_sequence_positive', sql`${table.sequence} > 0`),
+  ],
+);
+
+export const interviewAnswers = pgTable(
+  'interview_answers',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    sessionId: uuid('session_id')
+      .notNull()
+      .references(() => interviewSessions.id, { onDelete: 'cascade' }),
+    questionId: uuid('question_id')
+      .notNull()
+      .references(() => interviewQuestions.id, { onDelete: 'cascade' }),
+    ownerId: uuid('owner_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    content: text('content'),
+    skipped: boolean('skipped').default(false).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex('interview_answers_question_unique').on(table.questionId),
+    index('interview_answers_owner_session_idx').on(
+      table.ownerId,
+      table.sessionId,
+    ),
+    check(
+      'interview_answers_content_or_skipped',
+      sql`${table.skipped} = true or length(trim(${table.content})) > 0`,
+    ),
+  ],
+);
+
+export const interviewTopicCoverage = pgTable(
+  'interview_topic_coverage',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    sessionId: uuid('session_id')
+      .notNull()
+      .references(() => interviewSessions.id, { onDelete: 'cascade' }),
+    ownerId: uuid('owner_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    category: memoryCategoryEnum('category').notNull(),
+    status: interviewTopicStatusEnum('status').default('unexplored').notNull(),
+    questionsAsked: integer('questions_asked').default(0).notNull(),
+    answersReceived: integer('answers_received').default(0).notNull(),
+    userBoundary: boolean('user_boundary').default(false).notNull(),
+    lastAskedAt: timestamp('last_asked_at', { withTimezone: true }),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex('interview_topic_coverage_session_category_unique').on(
+      table.sessionId,
+      table.category,
+    ),
+    index('interview_topic_coverage_owner_session_idx').on(
+      table.ownerId,
+      table.sessionId,
+    ),
+    check(
+      'interview_topic_coverage_counts_nonnegative',
+      sql`${table.questionsAsked} >= 0 and ${table.answersReceived} >= 0`,
+    ),
+  ],
+);
+
+export const extractionCandidates = pgTable(
+  'extraction_candidates',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    sessionId: uuid('session_id')
+      .notNull()
+      .references(() => interviewSessions.id, { onDelete: 'cascade' }),
+    storyId: uuid('story_id')
+      .notNull()
+      .references(() => stories.id, { onDelete: 'cascade' }),
+    ownerId: uuid('owner_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    sourceAnswerId: uuid('source_answer_id')
+      .notNull()
+      .references(() => interviewAnswers.id, { onDelete: 'cascade' }),
+    fingerprint: varchar('fingerprint', { length: 64 }).notNull(),
+    title: varchar('title', { length: 180 }).notNull(),
+    description: text('description').notNull(),
+    category: memoryCategoryEnum('category').default('other').notNull(),
+    eventDate: date('event_date'),
+    datePrecision: datePrecisionEnum('date_precision')
+      .default('unknown')
+      .notNull(),
+    location: varchar('location', { length: 255 }),
+    evidenceQuote: text('evidence_quote').notNull(),
+    status: extractionStatusEnum('status').default('pending').notNull(),
+    approvedMemoryId: uuid('approved_memory_id').references(() => memories.id, {
+      onDelete: 'set null',
+    }),
+    approvedTimelineEventId: uuid('approved_timeline_event_id').references(
+      () => timelineEvents.id,
+      { onDelete: 'set null' },
+    ),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    reviewedAt: timestamp('reviewed_at', { withTimezone: true }),
+  },
+  (table) => [
+    uniqueIndex('extraction_candidates_session_fingerprint_unique').on(
+      table.sessionId,
+      table.fingerprint,
+    ),
+    index('extraction_candidates_owner_session_idx').on(
+      table.ownerId,
+      table.sessionId,
+    ),
+    index('extraction_candidates_status_idx').on(table.sessionId, table.status),
+    check('extraction_candidates_title_not_blank', sql`length(trim(${table.title})) > 0`),
+    check(
+      'extraction_candidates_description_not_blank',
+      sql`length(trim(${table.description})) > 0`,
+    ),
+    check(
+      'extraction_candidates_evidence_not_blank',
+      sql`length(trim(${table.evidenceQuote})) > 0`,
+    ),
+  ],
+);
+
+export const memorySourceReferences = pgTable(
+  'memory_source_references',
+  {
+    memoryId: uuid('memory_id')
+      .notNull()
+      .references(() => memories.id, { onDelete: 'cascade' }),
+    answerId: uuid('answer_id')
+      .notNull()
+      .references(() => interviewAnswers.id, { onDelete: 'restrict' }),
+    extractionId: uuid('extraction_id')
+      .notNull()
+      .references(() => extractionCandidates.id, { onDelete: 'restrict' }),
+  },
+  (table) => [
+    uniqueIndex('memory_source_references_extraction_unique').on(table.extractionId),
+    index('memory_source_references_memory_idx').on(table.memoryId),
+  ],
+);
+
+export const aiJobs = pgTable(
+  'ai_jobs',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    ownerId: uuid('owner_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    storyId: uuid('story_id')
+      .notNull()
+      .references(() => stories.id, { onDelete: 'cascade' }),
+    sessionId: uuid('session_id')
+      .notNull()
+      .references(() => interviewSessions.id, { onDelete: 'cascade' }),
+    type: aiJobTypeEnum('type').notNull(),
+    status: aiJobStatusEnum('status').default('queued').notNull(),
+    deduplicationKey: varchar('deduplication_key', { length: 64 }).notNull(),
+    attempts: integer('attempts').default(0).notNull(),
+    maxAttempts: integer('max_attempts').default(3).notNull(),
+    progress: integer('progress').default(0).notNull(),
+    resultReferenceId: uuid('result_reference_id'),
+    errorCode: varchar('error_code', { length: 100 }),
+    errorMessage: varchar('error_message', { length: 500 }),
+    retryable: boolean('retryable').default(true).notNull(),
+    cancellationRequested: boolean('cancellation_requested').default(false).notNull(),
+    enqueuedAt: timestamp('enqueued_at', { withTimezone: true }),
+    startedAt: timestamp('started_at', { withTimezone: true }),
+    completedAt: timestamp('completed_at', { withTimezone: true }),
+    failedAt: timestamp('failed_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex('ai_jobs_owner_type_deduplication_unique').on(
+      table.ownerId,
+      table.type,
+      table.deduplicationKey,
+    ),
+    index('ai_jobs_owner_created_idx').on(table.ownerId, table.createdAt),
+    index('ai_jobs_status_enqueued_idx').on(table.status, table.enqueuedAt),
+    index('ai_jobs_session_type_idx').on(table.sessionId, table.type),
+    check('ai_jobs_attempts_nonnegative', sql`${table.attempts} >= 0`),
+    check('ai_jobs_max_attempts_positive', sql`${table.maxAttempts} > 0`),
+    check(
+      'ai_jobs_progress_range',
+      sql`${table.progress} >= 0 and ${table.progress} <= 100`,
+    ),
+  ],
+);
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 
@@ -390,3 +701,9 @@ export type NewMemory = typeof memories.$inferInsert;
 export type TimelineEvent = typeof timelineEvents.$inferSelect;
 export type NewTimelineEvent = typeof timelineEvents.$inferInsert;
 export type MediaAsset = typeof mediaAssets.$inferSelect;
+export type InterviewSession = typeof interviewSessions.$inferSelect;
+export type InterviewQuestion = typeof interviewQuestions.$inferSelect;
+export type InterviewAnswer = typeof interviewAnswers.$inferSelect;
+export type InterviewTopicCoverage = typeof interviewTopicCoverage.$inferSelect;
+export type ExtractionCandidate = typeof extractionCandidates.$inferSelect;
+export type AiJob = typeof aiJobs.$inferSelect;
