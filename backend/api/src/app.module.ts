@@ -10,6 +10,9 @@ import { HealthModule } from './health/health.module.js';
 import { DatabaseModule } from './infrastructure/database/database.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { StoriesModule } from './modules/stories/stories.module.js';
+import { MemoriesModule } from './modules/memories/memories.module.js';
+import { TimelineModule } from './modules/timeline/timeline.module.js';
+import { MediaModule } from './modules/media/media.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
@@ -56,6 +59,9 @@ import { UsersModule } from './modules/users/users.module.js';
     UsersModule,
     AuthModule,
     StoriesModule,
+    MemoriesModule,
+    TimelineModule,
+    MediaModule,
   ],
 
   providers: [

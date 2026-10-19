@@ -48,6 +48,8 @@ const environmentSchema = z.object({
     .positive()
     .max(365)
     .default(30),
+
+  STORAGE_PATH: z.string().min(1).default('./storage'),
 });
 
 export type Environment = z.infer<typeof environmentSchema>;

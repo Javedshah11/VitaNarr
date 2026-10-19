@@ -35,13 +35,22 @@ describe('filterAndSortStories', () => {
     const originalOrder = stories.map((story) => story.id);
 
     expect(filterAndSortStories(stories, 'classroom', 'all', 'updated_desc')).toHaveLength(1);
-    expect(filterAndSortStories(stories, 'belonging', 'all', 'updated_desc')[0]?.id).toBe('story-1');
+    expect(filterAndSortStories(stories, 'belonging', 'all', 'updated_desc')[0]?.id).toBe(
+      'story-1',
+    );
     expect(stories.map((story) => story.id)).toEqual(originalOrder);
   });
 
   it('combines status filtering with the selected ordering', () => {
-    expect(filterAndSortStories(stories, '', 'draft', 'title_asc').map((story) => story.id)).toEqual(['story-1']);
-    expect(filterAndSortStories(stories, '', 'all', 'created_desc').map((story) => story.id)).toEqual(['story-1', 'story-2']);
-    expect(filterAndSortStories(stories, '', 'all', 'title_asc').map((story) => story.id)).toEqual(['story-1', 'story-2']);
+    expect(
+      filterAndSortStories(stories, '', 'draft', 'title_asc').map((story) => story.id),
+    ).toEqual(['story-1']);
+    expect(
+      filterAndSortStories(stories, '', 'all', 'created_desc').map((story) => story.id),
+    ).toEqual(['story-1', 'story-2']);
+    expect(filterAndSortStories(stories, '', 'all', 'title_asc').map((story) => story.id)).toEqual([
+      'story-1',
+      'story-2',
+    ]);
   });
 });

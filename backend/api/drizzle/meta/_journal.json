@@ -15,6 +15,13 @@
       "when": 1792353211500,
       "tag": "0001_round_ender_wiggin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792392258115,
+      "tag": "0002_remarkable_jimmy_woo",
+      "breakpoints": true
     }
   ]
 }

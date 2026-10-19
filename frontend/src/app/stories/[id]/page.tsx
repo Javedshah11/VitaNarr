@@ -27,13 +27,23 @@ import { cn } from '@/lib/cn';
 
 const futureSections = [
   { title: 'Chapters', detail: 'Start shaping your life into a book.', icon: FileText },
-  { title: 'Memory vault', detail: 'Photos and memories arrive in Phase 4.', icon: ImageIcon },
+  {
+    title: 'Memory vault',
+    detail: 'Preserve memories, photographs and documents.',
+    icon: ImageIcon,
+    href: 'memories',
+  },
   {
     title: 'Life interview',
     detail: 'Guided questions arrive in Phase 6.',
     icon: MessageSquareText,
   },
-  { title: 'Timeline', detail: 'Your chronology arrives in Phase 5.', icon: CalendarDays },
+  {
+    title: 'Timeline',
+    detail: 'Arrange verified life events chronologically.',
+    icon: CalendarDays,
+    href: 'timeline',
+  },
 ] as const;
 
 export default function StoryOverviewPage() {
@@ -207,16 +217,25 @@ export default function StoryOverviewPage() {
                 Your story workspace
               </h2>
               <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {futureSections.map(({ title, detail, icon: Icon }) => (
+                {futureSections.map(({ title, detail, icon: Icon, ...section }) => (
                   <article key={title} className="rounded-2xl border border-stroke bg-card p-6">
                     <span className="grid size-11 place-items-center rounded-xl bg-brand/8 text-brand">
                       <Icon className="size-5" />
                     </span>
                     <h3 className="mt-5 font-serif text-2xl font-semibold">{title}</h3>
                     <p className="mt-2 text-sm leading-6 text-muted">{detail}</p>
-                    <span className="mt-5 block text-xs font-bold uppercase tracking-wider text-muted">
-                      Coming soon
-                    </span>
+                    {'href' in section ? (
+                      <Link
+                        href={`/stories/${story.id}/${section.href}`}
+                        className="mt-5 inline-flex text-xs font-bold uppercase tracking-wider text-brand"
+                      >
+                        Open workspace →
+                      </Link>
+                    ) : (
+                      <span className="mt-5 block text-xs font-bold uppercase tracking-wider text-muted">
+                        Coming soon
+                      </span>
+                    )}
                   </article>
                 ))}
               </div>
