@@ -9,6 +9,13 @@ import { validateEnvironment } from './config/environment.js';
 import { HealthModule } from './health/health.module.js';
 import { DatabaseModule } from './infrastructure/database/database.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
+import { StoriesModule } from './modules/stories/stories.module.js';
+import { MemoriesModule } from './modules/memories/memories.module.js';
+import { TimelineModule } from './modules/timeline/timeline.module.js';
+import { MediaModule } from './modules/media/media.module.js';
+import { InterviewsModule } from './modules/interviews/interviews.module.js';
+import { ExtractionsModule } from './modules/extractions/extractions.module.js';
+import { AiJobsModule } from './modules/ai-jobs/ai-jobs.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
@@ -29,6 +36,14 @@ import { UsersModule } from './modules/users/users.module.js';
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.LOG_LEVEL ?? 'info',
+        redact: {
+          censor: '[REDACTED]',
+          paths: [
+            'req.headers.authorization',
+            'req.headers.cookie',
+            'res.headers["set-cookie"]',
+          ],
+        },
         transport:
           process.env.NODE_ENV === 'production'
             ? undefined
@@ -46,6 +61,13 @@ import { UsersModule } from './modules/users/users.module.js';
     HealthModule,
     UsersModule,
     AuthModule,
+    StoriesModule,
+    MemoriesModule,
+    TimelineModule,
+    MediaModule,
+    InterviewsModule,
+    ExtractionsModule,
+    AiJobsModule,
   ],
 
   providers: [
